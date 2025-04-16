@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="160dp"
+    android:viewportWidth="360"
+    android:viewportHeight="160">
+
+    <!-- Nền trắng -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M0,0h360v160h-360z" />
+
+    <!-- Sóng dưới cùng (nhạt hơn, độ mờ thấp hơn) -->
+    <path
+        android:fillColor="#335DCCFC"
+        android:pathData="M0,90
+    C90,130 180,60 270,100
+    C320,130 360,90 360,90
+    V160
+    H0Z" />
+
+    <!-- Sóng trên (đậm hơn, độ mờ cao hơn) -->
+    <path
+        android:fillColor="#685DCCFC"
+        android:pathData="M0,80
+    C90,120 180,40 270,90
+    C320,120 360,80 360,80
+    V160
+    H0Z" />
+</vector>
