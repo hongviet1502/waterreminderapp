@@ -1,186 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragment.HomeFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Greeting & Profile Icon -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <!-- Greeting & Profile Icon -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:text="Good Morning,"
+                    android:textColor="#888"
+                    android:textSize="14sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Good Morning,"
-                        android:textColor="#888"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Linh Chi"
-                        android:textColor="#000"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_circle_white"
-                    android:padding="11dp"
-                    android:src="@drawable/ic_notify" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Linh Chi"
+                    android:textColor="#000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Card Water Intake Time -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="145dp"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp">
-
-                <vn.com.rd.waterreminder.ui.WaveView
-                    android:id="@+id/wave_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="145dp"
-                    />
-<!--                <ImageView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:scaleType="centerCrop"-->
-<!--                    android:src="@drawable/bg_wave" />-->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="11:00 AM"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="200ml water (2 Glass)"
-                        android:textColor="#888"
-                        android:textSize="14sp" />
-
-                    <Button
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Add Your Goal" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Circular Progress Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
-
-                <!-- Circular Water Progress -->
-                <FrameLayout
-                    android:layout_width="150dp"
-                    android:layout_height="150dp">
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:src="@drawable/ic_water_circle" />-->
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="500ml"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-
-                <!-- Progress Card -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingStart="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="9:30 AM"
-                        android:textColor="#888"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:text="100ml"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"/>
-
-                    <ProgressBar
-                        style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:progress="40"
-                        android:progressDrawable="@drawable/progress_bar_blue" />
-
-                    <TextView
-                        android:text="Target 2000ml"
-                        android:textColor="#888"
-                        android:textSize="12sp"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Dashboard Button -->
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="#3BBDF6"
-                android:elevation="4dp"
-                android:padding="12dp"
-                android:text="Go To Dashboard"
-                android:textColor="#FFF" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:text="You got 50% of today's goal, keep focus on your health!"
-                android:textColor="#888"
-                android:textSize="12sp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_circle_white"
+                android:padding="11dp"
+                android:src="@drawable/ic_notify" />
         </LinearLayout>
+
+        <!-- Card Water Intake Time -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="145dp"
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <vn.com.rd.waterreminder.ui.WaveView
+                android:id="@+id/wave_view"
+                android:layout_width="match_parent"
+                android:layout_height="145dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="11:00 AM"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="200ml water (2 Glass)"
+                    android:textColor="#888"
+                    android:textSize="14sp" />
+
+                <Button
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Add Your Goal" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Circular Progress Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Circular Water Progress -->
+            <vn.com.rd.waterreminder.ui.WaveCircleProgressView
+                android:id="@+id/waterProgressView"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true" />
+
+            <!-- Progress Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="9:30 AM"
+                            android:textColor="#888"
+                            android:textSize="12sp" />
+
+                        <ProgressBar
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:layout_gravity="center"
+                            android:paddingHorizontal="10dp"
+                            android:progress="40"
+                            android:progressDrawable="@drawable/progress_bar_blue" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="3"
+                        android:layout_marginTop="5dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/ic_soup" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="100ml"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="10%"
+                            android:textColor="#888"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="10dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Target:"
+                            android:textColor="#888"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:layout_marginStart="10dp"
+                            android:text="2000ml"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <!-- Dashboard Button -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#5DCCFC"
+            android:elevation="4dp"
+            android:textFontWeight="600"
+            android:paddingHorizontal="24dp"
+            android:text="Go To Dashboard"
+            android:layout_gravity="center"
+            android:textColor="#FFF"
+            android:background="@drawable/bg_rounded"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="You got 50% of today's goal, keep\nfocus on your health!"
+            android:textColor="#888"
+            android:textSize="12sp" />
+    </LinearLayout>
 </FrameLayout>
