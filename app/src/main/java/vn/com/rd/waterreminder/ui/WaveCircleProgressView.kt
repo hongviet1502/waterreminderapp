@@ -1,11 +1,15 @@
 package vn.com.rd.waterreminder.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import kotlin.math.min
 import kotlin.math.sin
@@ -14,6 +18,9 @@ class WaveCircleProgressView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : View(context, attrs) {
+    private var onClickListener: OnClickListener? = null
+    private var drinkAnimator: ValueAnimator? = null
+    private var refillAnimator: ValueAnimator? = null
 
     private val wavePaint1 = Paint().apply {
         color = Color.parseColor("#B03BB8ED")
@@ -35,7 +42,7 @@ class WaveCircleProgressView @JvmOverloads constructor(
     }
 
     private val textPaint = TextPaint().apply {
-        color = Color.GRAY
+        color = Color.WHITE
         textSize = 50f
         textAlign = Paint.Align.CENTER
         isAntiAlias = true
@@ -84,6 +91,66 @@ class WaveCircleProgressView @JvmOverloads constructor(
     init {
         animator1.start()
         animator2.start()
+
+        // Make the view clickable
+        isClickable = true
+
+        // Set up the default click behavior
+        super.setOnClickListener { view ->
+            // Call the custom listener if it exists
+            onClickListener?.onClick(view)
+        }
+    }
+
+    fun animateDrinking(
+        drinkDuration: Long = 1500,
+        refillDuration: Long = 2000,
+        delayBetween: Long = 300,
+        onAnimationEnd: (() -> Unit)? = null
+    ) {
+        // Cancel any ongoing animations
+        drinkAnimator?.cancel()
+        refillAnimator?.cancel()
+
+        val currentProgress = progress
+
+        // Create drain animation
+        drinkAnimator = ValueAnimator.ofFloat(currentProgress, 0f).apply {
+            duration = drinkDuration
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                progress = it.animatedValue as Float
+                invalidate()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    // Start refill animation after a delay
+                    postDelayed({
+                        startRefillAnimation(currentProgress, refillDuration, onAnimationEnd)
+                    }, delayBetween)
+                }
+            })
+        }
+
+        // Start the drink animation
+        drinkAnimator?.start()
+    }
+
+    private fun startRefillAnimation(targetProgress: Float, duration: Long, onComplete: (() -> Unit)?) {
+        refillAnimator = ValueAnimator.ofFloat(0f, targetProgress).apply {
+            this.duration = duration
+            interpolator = AccelerateInterpolator()
+            addUpdateListener {
+                progress = it.animatedValue as Float
+                invalidate()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    onComplete?.invoke()
+                }
+            })
+        }
+        refillAnimator?.start()
     }
 
     fun setProgress(progress: Float) {
@@ -181,6 +248,13 @@ class WaveCircleProgressView @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         animator1.cancel()
         animator2.cancel()
+        drinkAnimator?.cancel()
+        refillAnimator?.cancel()
         super.onDetachedFromWindow()
+    }
+
+    override fun setOnClickListener(listener: OnClickListener?) {
+        // Store the listener
+        this.onClickListener = listener
     }
 }
