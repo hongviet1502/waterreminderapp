@@ -5,7 +5,16 @@
         <!-- Font -->
         <item name="android:fontFamily">@font/poppins</item>
         <item name="fontFamily">@font/poppins</item>
+
+        <item name="android:windowBackground">@drawable/bg_primary</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="Theme.WaterReminder" parent="Base.Theme.WaterReminder" />
+
+    <style name="TransparentBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+    </style>
 </resources>

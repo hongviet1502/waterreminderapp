@@ -1,5 +1,6 @@
 package vn.com.rd.waterreminder.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import vn.com.rd.waterreminder.databinding.FragmentHomeBinding
+import vn.com.rd.waterreminder.ui.activity.GoalActivity
+import vn.com.rd.waterreminder.ui.main.MainActivity
 import vn.com.rd.waterreminder.util.TimeUtil
 
 class HomeFragment : Fragment() {
@@ -38,6 +41,11 @@ class HomeFragment : Fragment() {
 
         binding.waterProgressView.setProgress(0.5f)
         binding.waterProgressView.setValue("500ml")
+
+        binding.btnSetYourGoal.setOnClickListener {
+            val intent = Intent(requireActivity(), GoalActivity::class.java)
+            startActivity(intent)
+        }
         return binding.root
     }
 

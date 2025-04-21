@@ -1,8 +1,9 @@
-package vn.com.rd.waterreminder.ui.main
+package vn.com.rd.waterreminder.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import vn.com.rd.waterreminder.data.repository.WaterRepository
+import vn.com.rd.waterreminder.viewmodel.MainViewModel
 
 class MainViewModelFactory(private val repository: WaterRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

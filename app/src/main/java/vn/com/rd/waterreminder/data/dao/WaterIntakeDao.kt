@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import vn.com.rd.waterreminder.data.model.DailyWaterIntake
 import vn.com.rd.waterreminder.data.model.WaterIntake
 
 @Dao
@@ -30,4 +31,29 @@ interface WaterIntakeDao {
 
     @Query("SELECT SUM(amount) FROM water_intakes WHERE userId = :userId AND timestamp >= :todayStart")
     fun getTodayTotalIntake(userId: Long, todayStart: Long): LiveData<Int?>
+
+    // Query to get total daily water intake in ml for a specific user
+    @Query("""
+        SELECT 
+            strftime('%Y-%m-%d', datetime(timestamp/1000, 'unixepoch')) as date,
+            SUM(amount) as totalAmount
+        FROM water_intakes
+        WHERE userId = :userId
+        GROUP BY date
+        ORDER BY date DESC
+    """)
+    fun getDailyTotalIntake(userId: Long): LiveData<List<DailyWaterIntake>>
+
+    // You can also get data for a specific date range
+    @Query("""
+        SELECT 
+            strftime('%Y-%m-%d', datetime(timestamp/1000, 'unixepoch')) as date,
+            SUM(amount) as totalAmount
+        FROM water_intakes
+        WHERE userId = :userId 
+        AND timestamp >= :startTime AND timestamp <= :endTime
+        GROUP BY date
+        ORDER BY date DESC
+    """)
+    fun getDailyTotalIntakeInRange(userId: Long, startTime: Long, endTime: Long): LiveData<List<DailyWaterIntake>>
 }

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.devtools.ksp")
+    id("kotlin-kapt")             // Kapt (cho Data Binding)
 }
 
 android {
@@ -29,6 +30,10 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+
+    dataBinding {
+        enable = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -72,4 +77,6 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.9.0")
 
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+
+    implementation ("io.github.ShawnLin013:number-picker:2.4.13")
 }

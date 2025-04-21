@@ -1,18 +1,18 @@
 package vn.com.rd.waterreminder.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import vn.com.rd.waterreminder.databinding.ActivityMainBinding
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import vn.com.rd.waterreminder.R
 import vn.com.rd.waterreminder.WaterReminderApplication
+import vn.com.rd.waterreminder.factory.MainViewModelFactory
 import vn.com.rd.waterreminder.ui.fragment.AnalysisFragment
 import vn.com.rd.waterreminder.ui.fragment.HomeFragment
 import vn.com.rd.waterreminder.ui.fragment.ProfileFragment
 import vn.com.rd.waterreminder.ui.fragment.SettingFragment
-import java.util.Calendar
+import vn.com.rd.waterreminder.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
@@ -24,6 +24,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
+//
+//        window.statusBarColor = Color.TRANSPARENT
+//        window.navigationBarColor = Color.TRANSPARENT
+//
+//        WindowInsetsControllerCompat(window, window.decorView).apply {
+//            isAppearanceLightStatusBars = true // icon đen (nên dùng nền sáng)
+//            isAppearanceLightNavigationBars = true
+//        }
+
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId) {

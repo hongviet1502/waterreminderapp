@@ -84,11 +84,12 @@
                     android:textSize="14sp" />
 
                 <Button
+                    android:id="@+id/btn_set_your_goal"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Add Your Goal" />
+                    android:text="Set Your Plan" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
