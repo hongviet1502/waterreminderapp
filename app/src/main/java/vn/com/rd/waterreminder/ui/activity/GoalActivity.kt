@@ -16,10 +16,10 @@ import vn.com.rd.waterreminder.R
 import vn.com.rd.waterreminder.data.db.WaterDatabase
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
 import vn.com.rd.waterreminder.databinding.ActivityGoalBinding
-import vn.com.rd.waterreminder.factory.WaterGoalViewModelFactory
+import vn.com.rd.waterreminder.factory.GoalViewModelFactory
 import vn.com.rd.waterreminder.ui.component.InfoItem
 import vn.com.rd.waterreminder.ui.component.InfoItemAdapter
-import vn.com.rd.waterreminder.viewmodel.WaterGoalViewModel
+import vn.com.rd.waterreminder.viewmodel.GoalViewModel
 import java.util.Locale
 
 
@@ -29,7 +29,7 @@ class GoalActivity : AppCompatActivity() {
     private var adapter: InfoItemAdapter? = null
     private lateinit var list : MutableList<InfoItem>
     private val TAG = "GoalActivity"
-    private lateinit var viewModel: WaterGoalViewModel
+    private lateinit var viewModel: GoalViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,14 +43,8 @@ class GoalActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true);
         supportActionBar?.setHomeAsUpIndicator(backArrowDrawable)
 
-        // 1. Khởi tạo các dependency
-        val database = WaterDatabase.getInstance(this)
-        val dao = database.waterGoalDao()
-        val repository = WaterGoalRepository(dao)
-
-        // 2. Tạo ViewModel với Factory
-        val factory = WaterGoalViewModelFactory(repository, Params.USER_ID)
-        viewModel = ViewModelProvider(this, factory)[WaterGoalViewModel::class.java]
+        val factory = GoalViewModelFactory(this, Params.USER_ID)
+        viewModel = ViewModelProvider(this, factory)[GoalViewModel::class.java]
 
         // 3. Theo dõi dữ liệu từ ViewModel
         observeViewModel()

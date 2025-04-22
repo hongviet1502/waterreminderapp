@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import vn.com.rd.waterreminder.data.model.WaterGoal
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
 
-class WaterGoalViewModel(
+class GoalViewModel(
     private val repository: WaterGoalRepository,
     private val userId: Long, // Lấy từ Auth/Session
     val isLoading: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -56,7 +56,7 @@ class WaterGoalViewModel(
         }
     }
 
-    private suspend fun refreshData(){
+    private suspend fun refreshData() {
         _currentGoal.value = repository.getOrCreateDefaultGoal(userId) // Refresh data
     }
 }

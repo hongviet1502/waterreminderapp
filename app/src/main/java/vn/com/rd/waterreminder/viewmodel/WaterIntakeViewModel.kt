@@ -8,32 +8,38 @@ import vn.com.rd.waterreminder.data.model.WaterIntake
 import vn.com.rd.waterreminder.data.repository.WaterIntakeRepository
 import java.time.LocalDate
 
-class WaterIntakeViewModel(private val waterIntakeRepository: WaterIntakeRepository) : ViewModel() {
-    fun getAllIntakes(userId: Long): LiveData<List<WaterIntake>> {
+class WaterIntakeViewModel(
+    private val waterIntakeRepository: WaterIntakeRepository,
+    private val userId: Long,
+) : ViewModel() {
+    fun getAllIntakes(): LiveData<List<WaterIntake>> {
         return waterIntakeRepository.getAllIntakes(userId)
     }
 
-    fun getTodayIntake(userId: Long): LiveData<Int?> {
+    fun getTodayIntake(): LiveData<Int?> {
         return waterIntakeRepository.getTodayIntake(userId)
     }
 
-    fun getIntakesForDateRange(userId: Long, startDate: LocalDate, endDate: LocalDate): LiveData<List<WaterIntake>> {
+    fun getIntakesForDateRange(
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): LiveData<List<WaterIntake>> {
         return waterIntakeRepository.getIntakesForDateRange(userId, startDate, endDate)
     }
 
-    fun addWaterIntake(waterIntake: WaterIntake){
+    fun addWaterIntake(waterIntake: WaterIntake) {
         viewModelScope.launch {
             waterIntakeRepository.addWaterIntake(waterIntake)
         }
     }
 
-    fun updateWaterIntake(waterIntake: WaterIntake){
+    fun updateWaterIntake(waterIntake: WaterIntake) {
         viewModelScope.launch {
             waterIntakeRepository.updateWaterIntake(waterIntake)
         }
     }
 
-    fun deleteWaterIntake(waterIntake: WaterIntake){
+    fun deleteWaterIntake(waterIntake: WaterIntake) {
         viewModelScope.launch {
             waterIntakeRepository.deleteWaterIntake(waterIntake)
         }

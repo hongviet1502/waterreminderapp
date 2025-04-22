@@ -9,31 +9,38 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import vn.com.rd.waterreminder.Params
 import vn.com.rd.waterreminder.data.db.WaterDatabase
+import vn.com.rd.waterreminder.data.model.WaterIntake
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
+import vn.com.rd.waterreminder.data.repository.WaterIntakeRepository
 import vn.com.rd.waterreminder.databinding.FragmentHomeBinding
-import vn.com.rd.waterreminder.factory.WaterGoalViewModelFactory
+import vn.com.rd.waterreminder.factory.HomeViewModelFactory
 import vn.com.rd.waterreminder.ui.activity.GoalActivity
-import vn.com.rd.waterreminder.ui.main.MainActivity
 import vn.com.rd.waterreminder.util.TimeUtil
-import vn.com.rd.waterreminder.viewmodel.WaterGoalViewModel
+import vn.com.rd.waterreminder.viewmodel.HomeViewModel
+import vn.com.rd.waterreminder.viewmodel.WaterIntakeViewModel
 
 class HomeFragment : Fragment() {
     private lateinit var _binding: FragmentHomeBinding
     private val binding get() = _binding
     private val handler = Handler(Looper.getMainLooper())
+    private var unitVol = 0
+    private var containerType = 0
     private lateinit var timeRunnable: Runnable
-    private lateinit var waterGoalViewModel: WaterGoalViewModel
+    private lateinit var homeViewModel: HomeViewModel
+    private val TAG = "HomeFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {
         super.onResume()
+        homeViewModel.loadGoalData()
         startUpdatingTime()
+        Log.i(TAG, "today intake: " + homeViewModel.getTodayIntake().value)
+
     }
 
     override fun onPause() {
@@ -47,16 +54,17 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        binding.waterProgressView.setProgress(0.8f)
+        val homeViewModelFactory = HomeViewModelFactory(requireActivity(), Params.USER_ID)
+        homeViewModel = ViewModelProvider(this, homeViewModelFactory)[HomeViewModel::class.java]
 
+        binding.waterProgressView.setProgress(0.8f)
         binding.waterProgressView.setOnClickListener {
             binding.waterProgressView.animateDrinking(
                 drinkDuration = 1500,
                 refillDuration = 2000,
                 delayBetween = 600,
                 onAnimationEnd = {
-                    // This will be called when the entire animation is complete
-                    Toast.makeText(requireActivity(), "Water refilled!", Toast.LENGTH_SHORT).show()
+                    homeViewModel.addWaterIntake(WaterIntake(userId = Params.USER_ID, amount = unitVol, containerType = containerType))
                 }
             )
         }
@@ -65,13 +73,6 @@ class HomeFragment : Fragment() {
             val intent = Intent(requireActivity(), GoalActivity::class.java)
             startActivity(intent)
         }
-
-        val database = WaterDatabase.getInstance(requireActivity())
-        val dao = database.waterGoalDao()
-        val repository = WaterGoalRepository(dao)
-
-        val factory = WaterGoalViewModelFactory(repository, Params.USER_ID)
-        waterGoalViewModel = ViewModelProvider(this, factory)[WaterGoalViewModel::class.java]
 
         observeViewModel()
         return binding.root
@@ -97,7 +98,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeViewModel(){
-        waterGoalViewModel.currentGoal.observe(viewLifecycleOwner) { goal ->
+        homeViewModel.currentGoal.observe(viewLifecycleOwner) { goal ->
             if (goal != null) {
                 // Update UI khi có goal
                 val unit = when (goal.unit) {
@@ -106,13 +107,14 @@ class HomeFragment : Fragment() {
                     Params.MUG -> "mug(s)"
                     else -> "unknown"
                 }
-
+                containerType = goal.unit
                 val unitVolume = when (goal.unit) {
                     Params.GLASS -> Params.GLASS_VOL
                     Params.BOTTLE -> Params.BOTTLE_VOL
                     Params.MUG -> Params.MUG_VOL
                     else -> 0
                 }
+                unitVol = unitVolume
                 val targetGoal = unitVolume * (goal.unitAmount)
                 binding.tvTarget.text = targetGoal.toString() + "ml"
                 binding.waterProgressView.setValue("${unitVolume}ml")

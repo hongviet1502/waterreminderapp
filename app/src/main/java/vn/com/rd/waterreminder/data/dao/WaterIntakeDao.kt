@@ -24,16 +24,29 @@ interface WaterIntakeDao {
     fun getAllIntakes(userId: Long): LiveData<List<WaterIntake>>
 
     @Query("SELECT * FROM water_intakes WHERE userId = :userId AND timestamp BETWEEN :startTime AND :endTime ORDER BY timestamp DESC")
-    fun getIntakesForDateRange(userId: Long, startTime: Long, endTime: Long): LiveData<List<WaterIntake>>
+    fun getIntakesForDateRange(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): LiveData<List<WaterIntake>>
 
     @Query("SELECT SUM(amount) FROM water_intakes WHERE userId = :userId AND timestamp BETWEEN :startTime AND :endTime")
     suspend fun getTotalIntakeForDateRange(userId: Long, startTime: Long, endTime: Long): Int?
 
-    @Query("SELECT SUM(amount) FROM water_intakes WHERE userId = :userId AND timestamp >= :todayStart")
-    fun getTodayTotalIntake(userId: Long, todayStart: Long): LiveData<Int?>
+    @Query(
+        """
+    SELECT COALESCE(SUM(amount), 0)
+    FROM water_intakes 
+    WHERE userId = :userId 
+    AND timestamp >= :todayStart 
+    AND timestamp < :todayEnd
+    """
+    )
+    fun getTodayTotalIntake(userId: Long, todayStart: Long, todayEnd: Long): LiveData<Int?>
 
     // Query to get total daily water intake in ml for a specific user
-    @Query("""
+    @Query(
+        """
         SELECT 
             strftime('%Y-%m-%d', datetime(timestamp/1000, 'unixepoch')) as date,
             SUM(amount) as totalAmount
@@ -41,11 +54,13 @@ interface WaterIntakeDao {
         WHERE userId = :userId
         GROUP BY date
         ORDER BY date DESC
-    """)
+    """
+    )
     fun getDailyTotalIntake(userId: Long): LiveData<List<DailyWaterIntake>>
 
     // You can also get data for a specific date range
-    @Query("""
+    @Query(
+        """
         SELECT 
             strftime('%Y-%m-%d', datetime(timestamp/1000, 'unixepoch')) as date,
             SUM(amount) as totalAmount
@@ -54,6 +69,11 @@ interface WaterIntakeDao {
         AND timestamp >= :startTime AND timestamp <= :endTime
         GROUP BY date
         ORDER BY date DESC
-    """)
-    fun getDailyTotalIntakeInRange(userId: Long, startTime: Long, endTime: Long): LiveData<List<DailyWaterIntake>>
+    """
+    )
+    fun getDailyTotalIntakeInRange(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): LiveData<List<DailyWaterIntake>>
 }

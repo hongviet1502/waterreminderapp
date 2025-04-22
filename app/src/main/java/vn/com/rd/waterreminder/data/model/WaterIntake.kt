@@ -9,7 +9,7 @@ data class WaterIntake(
     val intakeId: Long = 0,
     val userId: Long,
     val amount: Int,  // in ml
-    val containerType: String?, // e.g., "Glass", "Bottle", "Cup"
+    val containerType: Int?, // e.g., "Glass", "Bottle", "Cup"
     val timestamp: Long = System.currentTimeMillis(),
     val note: String? = null
 )

@@ -20,7 +20,7 @@ import vn.com.rd.waterreminder.data.model.WaterLog
         WaterGoal::class,
         WaterLog::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class WaterDatabase : RoomDatabase() {

@@ -10,8 +10,10 @@ class WaterIntakeRepository(private val waterIntakeDao: WaterIntakeDao) {
     fun getAllIntakes(userId: Long) = waterIntakeDao.getAllIntakes(userId)
 
     fun getTodayIntake(userId: Long): LiveData<Int?> {
-        val todayStart = LocalDate.now().atStartOfDay().toEpochSecond(ZoneOffset.UTC) * 1000
-        return waterIntakeDao.getTodayTotalIntake(userId, todayStart)
+        val today = LocalDate.now()
+        val todayStart = today.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val todayEnd = todayStart + 86_400_000  // 24h sau
+        return waterIntakeDao.getTodayTotalIntake(userId, todayStart, todayEnd)
     }
 
     fun getIntakesForDateRange(userId: Long, startDate: LocalDate, endDate: LocalDate): LiveData<List<WaterIntake>> {
