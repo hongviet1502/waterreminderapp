@@ -28,6 +28,7 @@ class HomeFragment : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
     private var unitVol = 0
     private var containerType = 0
+    private var targetAmount = 0
     private lateinit var timeRunnable: Runnable
     private lateinit var homeViewModel: HomeViewModel
     private val TAG = "HomeFragment"
@@ -39,8 +40,6 @@ class HomeFragment : Fragment() {
         super.onResume()
         homeViewModel.loadGoalData()
         startUpdatingTime()
-        Log.i(TAG, "today intake: " + homeViewModel.getTodayIntake().value)
-
     }
 
     override fun onPause() {
@@ -64,7 +63,7 @@ class HomeFragment : Fragment() {
                 refillDuration = 2000,
                 delayBetween = 600,
                 onAnimationEnd = {
-                    homeViewModel.addWaterIntake(WaterIntake(userId = Params.USER_ID, amount = unitVol, containerType = containerType))
+                    homeViewModel.addWaterIntake(WaterIntake(userId = Params.USER_ID, amount = unitVol, containerType = containerType, timestamp = System.currentTimeMillis()))
                 }
             )
         }
@@ -116,10 +115,20 @@ class HomeFragment : Fragment() {
                 }
                 unitVol = unitVolume
                 val targetGoal = unitVolume * (goal.unitAmount)
+                targetAmount = targetGoal
                 binding.tvTarget.text = targetGoal.toString() + "ml"
                 binding.waterProgressView.setValue("${unitVolume}ml")
                 binding.tvGoal.text = "${targetGoal}ml water (${goal.unitAmount} ${unit})"
             } else { }
+        }
+
+        homeViewModel.getTodayIntake().observe(requireActivity()) { intake ->
+            binding.tvTodayTotal.text = intake.toString() + "ml"
+            val percent = (intake?.toDouble()?.div(targetAmount))?.times(100)
+            binding.tvPercentToday.text = percent.toString()+"%"
+            if (percent != null) {
+                binding.prbTarget.progress = percent.toInt()
+            }
         }
     }
 }

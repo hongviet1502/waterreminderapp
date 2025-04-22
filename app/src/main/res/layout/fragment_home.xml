@@ -135,6 +135,7 @@
 
                         <ProgressBar
                             style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:id="@+id/prb_target"
                             android:layout_width="match_parent"
                             android:layout_height="6dp"
                             android:layout_gravity="center"
@@ -156,6 +157,7 @@
                             android:src="@drawable/ic_soup" />
 
                         <TextView
+                            android:id="@+id/tv_today_total"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -164,6 +166,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tv_percent_today"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
