@@ -47,14 +47,14 @@ interface WaterIntakeDao {
     // Query to get total daily water intake in ml for a specific user
     @Query(
         """
-        SELECT 
-            strftime('%Y-%m-%d', datetime(timestamp/1000, 'unixepoch')) as date,
-            SUM(amount) as totalAmount
-        FROM water_intakes
-        WHERE userId = :userId
-        GROUP BY date
-        ORDER BY date DESC
-    """
+    SELECT 
+        strftime('%Y-%m-%d', datetime(timestamp/1000, 'unixepoch', 'localtime')) as date,
+        COALESCE(SUM(amount), 0) as totalAmount
+    FROM water_intakes
+    WHERE userId = :userId
+    GROUP BY date
+    ORDER BY date DESC
+"""
     )
     fun getDailyTotalIntake(userId: Long): LiveData<List<DailyWaterIntake>>
 

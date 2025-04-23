@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import vn.com.rd.waterreminder.data.model.WaterDayHistoryItem
 import vn.com.rd.waterreminder.data.model.WaterGoal
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
+import vn.com.rd.waterreminder.data.repository.WaterIntakeRepository
 
 class GoalViewModel(
     private val repository: WaterGoalRepository,
+    private val waterIntakeRepository: WaterIntakeRepository,
     private val userId: Long, // Lấy từ Auth/Session
     val isLoading: MutableLiveData<Boolean> = MutableLiveData(true)
 ) : ViewModel() {
@@ -26,6 +29,8 @@ class GoalViewModel(
             isLoading.value = false
         }
     }
+
+    val historyItems: LiveData<List<WaterDayHistoryItem>> = waterIntakeRepository.getHistoryItems(userId)
 
     // Cập nhật goal (tạo mới hoặc update)
     fun updateGoal(amount: Int, unit: Int) {

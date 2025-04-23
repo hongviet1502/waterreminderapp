@@ -14,6 +14,7 @@ import com.shawnlin.numberpicker.NumberPicker
 import vn.com.rd.waterreminder.Params
 import vn.com.rd.waterreminder.R
 import vn.com.rd.waterreminder.data.db.WaterDatabase
+import vn.com.rd.waterreminder.data.model.WaterDayHistoryItem
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
 import vn.com.rd.waterreminder.databinding.ActivityGoalBinding
 import vn.com.rd.waterreminder.factory.GoalViewModelFactory
@@ -48,8 +49,6 @@ class GoalActivity : AppCompatActivity() {
 
         // 3. Theo dõi dữ liệu từ ViewModel
         observeViewModel()
-
-
         setupSpinner()
         setupRecyclerView()
         setUpNumberPicker()
@@ -101,12 +100,16 @@ class GoalActivity : AppCompatActivity() {
 
     private fun loadSampleData() {
         // Sample data for the last 7 days
-        list.add(InfoItem("April 18, 2025", "8"))
-        list.add(InfoItem("April 18, 2025", "8"))
-        list.add(InfoItem("April 18, 2025", "8"))
-        list.add(InfoItem("April 18, 2025", "8"))
-        list.add(InfoItem("April 18, 2025", "8"))
-        adapter?.notifyDataSetChanged()
+        viewModel.historyItems.observe(this) {listDayHistory ->
+            if(listDayHistory != null){
+                for (dayHistory in listDayHistory){
+                    Log.i(TAG, "dayHistory: $dayHistory")
+                    list.add(InfoItem(dayHistory.date, dayHistory.amount.toString() + "/" + dayHistory.target.toString()))
+                }
+            }
+            Log.i(TAG, "loadSampleData: " + list)
+            adapter?.notifyDataSetChanged()
+        }
     }
 
     private fun setUpNumberPicker(){

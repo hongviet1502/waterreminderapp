@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import vn.com.rd.waterreminder.data.db.WaterDatabase
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
+import vn.com.rd.waterreminder.data.repository.WaterIntakeRepository
 import vn.com.rd.waterreminder.viewmodel.GoalViewModel
 
 class GoalViewModelFactory(
@@ -17,7 +18,10 @@ class GoalViewModelFactory(
             val dao = database.waterGoalDao()
             val repository = WaterGoalRepository(dao)
 
-            return GoalViewModel(repository, userId) as T
+            val waterIntakeDao = database.waterIntakeDao()
+            val waterIntakeRepository = WaterIntakeRepository(waterIntakeDao)
+
+            return GoalViewModel(repository, waterIntakeRepository,userId) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -32,6 +32,11 @@ class HomeFragment : Fragment() {
     private lateinit var timeRunnable: Runnable
     private lateinit var homeViewModel: HomeViewModel
     private val TAG = "HomeFragment"
+
+    companion object {
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -52,10 +57,29 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         val homeViewModelFactory = HomeViewModelFactory(requireActivity(), Params.USER_ID)
         homeViewModel = ViewModelProvider(this, homeViewModelFactory)[HomeViewModel::class.java]
+        setupListeners()
+        observeViewModel()
+        return binding.root
+    }
 
+    private fun startUpdatingTime() {
+        timeRunnable = object : Runnable {
+            override fun run() {
+                val currentTime = TimeUtil.getCurrentTime()
+                binding.tvTime.text = currentTime
+                handler.postDelayed(this, 10000)
+            }
+        }
+        handler.post(timeRunnable)
+    }
+
+    private fun stopUpdatingTime() {
+        handler.removeCallbacks(timeRunnable)
+    }
+
+    private fun setupListeners() {
         binding.waterProgressView.setProgress(0.8f)
         binding.waterProgressView.setOnClickListener {
             binding.waterProgressView.animateDrinking(
@@ -72,28 +96,6 @@ class HomeFragment : Fragment() {
             val intent = Intent(requireActivity(), GoalActivity::class.java)
             startActivity(intent)
         }
-
-        observeViewModel()
-        return binding.root
-    }
-
-    companion object {
-
-    }
-
-    private fun startUpdatingTime() {
-        timeRunnable = object : Runnable {
-            override fun run() {
-                val currentTime = TimeUtil.getCurrentTime()
-                binding.tvTime.text = currentTime
-                handler.postDelayed(this, 10000)
-            }
-        }
-        handler.post(timeRunnable)
-    }
-
-    private fun stopUpdatingTime() {
-        handler.removeCallbacks(timeRunnable)
     }
 
     private fun observeViewModel(){

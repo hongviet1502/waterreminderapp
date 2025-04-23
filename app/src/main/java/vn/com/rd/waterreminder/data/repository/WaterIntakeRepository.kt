@@ -1,10 +1,17 @@
 package vn.com.rd.waterreminder.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import vn.com.rd.waterreminder.data.dao.WaterIntakeDao
+import vn.com.rd.waterreminder.data.model.WaterDayHistoryItem
 import vn.com.rd.waterreminder.data.model.WaterIntake
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneOffset
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class WaterIntakeRepository(private val waterIntakeDao: WaterIntakeDao) {
     fun getAllIntakes(userId: Long) = waterIntakeDao.getAllIntakes(userId)
@@ -32,5 +39,29 @@ class WaterIntakeRepository(private val waterIntakeDao: WaterIntakeDao) {
         val startTime = date.atStartOfDay().toEpochSecond(ZoneOffset.UTC) * 1000
         val endTime = date.plusDays(1).atStartOfDay().toEpochSecond(ZoneOffset.UTC) * 1000 - 1
         return waterIntakeDao.getTotalIntakeForDateRange(userId, startTime, endTime) ?: 0
+    }
+
+    fun getHistoryItems(userId: Long): LiveData<List<WaterDayHistoryItem>> {
+        return waterIntakeDao.getDailyTotalIntake(userId = userId).map { dailyIntakes ->
+            dailyIntakes.map { intake ->
+                WaterDayHistoryItem(
+                    date = intake.date,
+                    amount = intake.totalAmount,
+                    target = 2000 // Hoặc lấy từ cài đặt người dùng
+                )
+            }
+        }
+    }
+
+    private fun formatDate(timestamp: Long): String {
+        Log.i("DATE_ERROR", "formatDate: $timestamp")
+        return try {
+            val sdf = SimpleDateFormat("EEEE, dd/MM/yyyy", Locale.getDefault())
+            sdf.timeZone = TimeZone.getDefault() // Hoặc TimeZone.getTimeZone("Asia/Ho_Chi_Minh")
+            sdf.format(Date(timestamp)) // Timestamp phải là milliseconds
+        } catch (e: Exception) {
+            Log.e("DATE_ERROR", "Lỗi convert timestamp: $timestamp", e)
+            "Unknown date"
+        }
     }
 }
