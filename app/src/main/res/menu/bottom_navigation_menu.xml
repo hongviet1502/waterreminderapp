@@ -11,6 +11,11 @@
         android:id="@+id/menu_analysis"/>
 
     <item
+        android:title="Alarm"
+        android:icon="@drawable/alarm"
+        android:id="@+id/menu_alarm"/>
+
+    <item
         android:title="Setting"
         android:icon="@drawable/ic_setting"
         android:id="@+id/menu_setting"/>

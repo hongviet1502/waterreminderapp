@@ -6,29 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import vn.com.rd.waterreminder.R
-import vn.com.rd.waterreminder.databinding.FragmentAnalysisBinding
+import vn.com.rd.waterreminder.databinding.FragmentAlarmBinding
 
-class AnalysisFragment : Fragment() {
-    private lateinit var _binding : FragmentAnalysisBinding
+class AlarmFragment : Fragment() {
+    private lateinit var _binding : FragmentAlarmBinding
     private val binding get() = _binding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentAnalysisBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View? {
+        _binding = FragmentAlarmBinding.inflate(inflater, container, false)
+        return inflater.inflate(R.layout.fragment_alarm, container, false)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-            AnalysisFragment().apply {
-                arguments = Bundle().apply {
-                }
+        fun newInstance(param1: String, param2: String) =
+            AlarmFragment().apply {
+
             }
     }
 }

@@ -16,11 +16,11 @@ import vn.com.rd.waterreminder.data.model.WaterIntake
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
 import vn.com.rd.waterreminder.data.repository.WaterIntakeRepository
 import vn.com.rd.waterreminder.databinding.FragmentHomeBinding
-import vn.com.rd.waterreminder.factory.HomeViewModelFactory
+import vn.com.rd.waterreminder.ui.factory.HomeViewModelFactory
 import vn.com.rd.waterreminder.ui.activity.GoalActivity
 import vn.com.rd.waterreminder.util.TimeUtil
-import vn.com.rd.waterreminder.viewmodel.HomeViewModel
-import vn.com.rd.waterreminder.viewmodel.WaterIntakeViewModel
+import vn.com.rd.waterreminder.ui.viewmodel.HomeViewModel
+import vn.com.rd.waterreminder.ui.viewmodel.WaterIntakeViewModel
 
 class HomeFragment : Fragment() {
     private lateinit var _binding: FragmentHomeBinding

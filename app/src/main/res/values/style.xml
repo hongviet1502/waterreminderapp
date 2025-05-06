@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Button khi được chọn -->
+    <style name="RadioButtonStyle.Selected" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/light_purple</item>
+        <item name="android:textColor">@color/md_grey_800</item>
+        <item name="cornerRadius">5dp</item>
+    </style>
+
+    <!-- Button khi không chọn -->
+    <style name="RadioButtonStyle.Deselected" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/md_grey_800</item>
+        <item name="cornerRadius">5dp</item>
+    </style>
+
+    <style name="MyButtonStyle">
+        <item name="android:textColor">@color/text_enabled</item>
+    </style>
+
+    <style name="DayToggleStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/bg_day_toggle</item>
+        <item name="android:textColor">@color/toggle_text_selector</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginHorizontal">5dp</item>
+    </style>
+
+</resources>

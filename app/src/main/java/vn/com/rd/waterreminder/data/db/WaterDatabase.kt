@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import vn.com.rd.waterreminder.data.dao.ReminderDao
 import vn.com.rd.waterreminder.data.dao.UserDao
 import vn.com.rd.waterreminder.data.dao.WaterGoalDao
 import vn.com.rd.waterreminder.data.dao.WaterIntakeDao
 import vn.com.rd.waterreminder.data.dao.WaterLogDao
+import vn.com.rd.waterreminder.data.model.Reminder
 import vn.com.rd.waterreminder.data.model.User
 import vn.com.rd.waterreminder.data.model.WaterGoal
 import vn.com.rd.waterreminder.data.model.WaterIntake
@@ -18,9 +20,10 @@ import vn.com.rd.waterreminder.data.model.WaterLog
         User::class,
         WaterIntake::class,
         WaterGoal::class,
-        WaterLog::class
+        WaterLog::class,
+        Reminder::class
     ],
-    version = 4,
+    version = 6,
     exportSchema = false
 )
 abstract class WaterDatabase : RoomDatabase() {
@@ -28,7 +31,7 @@ abstract class WaterDatabase : RoomDatabase() {
     abstract fun waterIntakeDao(): WaterIntakeDao
     abstract fun waterGoalDao(): WaterGoalDao
     abstract fun waterLogDao(): WaterLogDao
-
+    abstract fun reminderDao(): ReminderDao
     companion object {
         @Volatile
         private var INSTANCE: WaterDatabase? = null

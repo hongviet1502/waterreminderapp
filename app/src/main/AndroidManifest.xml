@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:name=".WaterReminderApplication"
         android:allowBackup="true"
@@ -13,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WaterReminder"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.activity.ReminderActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.activity.GoalActivity"
             android:exported="false" />
@@ -28,6 +35,13 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false" />
+
+        <service
+            android:name=".service.WaterAlarmService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver android:name=".service.ReminderReceiver" />
     </application>
 
 </manifest>

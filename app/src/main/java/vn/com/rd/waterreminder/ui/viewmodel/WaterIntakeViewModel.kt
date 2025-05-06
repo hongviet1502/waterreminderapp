@@ -1,4 +1,4 @@
-package vn.com.rd.waterreminder.viewmodel
+package vn.com.rd.waterreminder.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

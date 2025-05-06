@@ -1,5 +1,7 @@
 package vn.com.rd.waterreminder.ui.main
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import vn.com.rd.waterreminder.databinding.ActivityMainBinding
@@ -7,12 +9,13 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import vn.com.rd.waterreminder.R
 import vn.com.rd.waterreminder.WaterReminderApplication
-import vn.com.rd.waterreminder.factory.MainViewModelFactory
+import vn.com.rd.waterreminder.ui.factory.MainViewModelFactory
+import vn.com.rd.waterreminder.service.WaterAlarmService
 import vn.com.rd.waterreminder.ui.fragment.AnalysisFragment
 import vn.com.rd.waterreminder.ui.fragment.HomeFragment
 import vn.com.rd.waterreminder.ui.fragment.ProfileFragment
 import vn.com.rd.waterreminder.ui.fragment.SettingFragment
-import vn.com.rd.waterreminder.viewmodel.MainViewModel
+import vn.com.rd.waterreminder.ui.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
@@ -24,17 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
-//
-//        window.statusBarColor = Color.TRANSPARENT
-//        window.navigationBarColor = Color.TRANSPARENT
-//
-//        WindowInsetsControllerCompat(window, window.decorView).apply {
-//            isAppearanceLightStatusBars = true // icon đen (nên dùng nền sáng)
-//            isAppearanceLightNavigationBars = true
-//        }
-
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId) {
@@ -59,24 +51,19 @@ class MainActivity : AppCompatActivity() {
         }
         binding.bottomNavigation.selectedItemId = R.id.menu_home
 
-//        val startOfDay = Calendar.getInstance().apply {
-//            set(Calendar.HOUR_OF_DAY, 0)
-//            set(Calendar.MINUTE, 0)
-//            set(Calendar.SECOND, 0)
-//            set(Calendar.MILLISECOND, 0)
-//        }.timeInMillis
+        // Kiểm tra quyền thông báo (Android 13+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
+        }
 
-//        viewModel.getTodayLogs(startOfDay).observe(this) { logs ->
-//            binding.tvCount.text = "Bạn đã uống nước ${logs.size} lần hôm nay"
-//        }
-//
-//        viewModel.totalAmount.observe(this) { total ->
-//            binding.tvTotalAmount.text = "Đã uống: ${total ?: 0} ml"
-//        }
-//
-//        binding.btnDrink.setOnClickListener {
-//            viewModel.logWater()
-//        }
+        // Khởi động Service
+        val serviceIntent = Intent(this, WaterAlarmService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
+        }
+
     }
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()

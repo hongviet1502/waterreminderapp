@@ -1,10 +1,12 @@
 package vn.com.rd.waterreminder.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,14 +15,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.shawnlin.numberpicker.NumberPicker
 import vn.com.rd.waterreminder.Params
 import vn.com.rd.waterreminder.R
-import vn.com.rd.waterreminder.data.db.WaterDatabase
-import vn.com.rd.waterreminder.data.model.WaterDayHistoryItem
-import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
+import vn.com.rd.waterreminder.data.model.Reminder
 import vn.com.rd.waterreminder.databinding.ActivityGoalBinding
-import vn.com.rd.waterreminder.factory.GoalViewModelFactory
+import vn.com.rd.waterreminder.ui.factory.GoalViewModelFactory
 import vn.com.rd.waterreminder.ui.component.InfoItem
 import vn.com.rd.waterreminder.ui.component.InfoItemAdapter
-import vn.com.rd.waterreminder.viewmodel.GoalViewModel
+import vn.com.rd.waterreminder.ui.main.MainActivity
+import vn.com.rd.waterreminder.ui.viewmodel.GoalViewModel
 import java.util.Locale
 
 
@@ -52,8 +53,12 @@ class GoalActivity : AppCompatActivity() {
         setupSpinner()
         setupRecyclerView()
         setUpNumberPicker()
+
+        binding.llAddNew.setOnClickListener {
+            startActivity(Intent(this, ReminderActivity::class.java))
+        }
         // Add sample data
-        loadSampleData()
+//        loadSampleData()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -128,6 +133,31 @@ class GoalActivity : AppCompatActivity() {
                 binding.numberPicker.value = goal.unitAmount
                 binding.spnUnit.setSelection(goal.unit)
             } else { }
+        }
+
+        viewModel.reminders.observe(this) { reminders ->
+            updateRemindersUI(reminders)
+        }
+    }
+
+    private fun updateRemindersUI(reminders: List<Reminder>) {
+        binding.addedRemindersLayout.removeAllViews()
+        Log.i(TAG, "reminders: $reminders")
+        reminders.forEach { reminder ->
+            val reminderView = layoutInflater.inflate(
+                R.layout.item_reminder_simple,
+                binding.addedRemindersLayout,
+                false
+            ).apply {
+                findViewById<TextView>(R.id.tv_reminder_time).text = reminder.time
+//                findViewById<TextView>(R.id.messageText).text = reminder.message
+
+//                findViewById<ImageButton>(R.id.deleteBtn).setOnClickListener {
+//                    viewModel.deleteReminder(reminder)
+//                }
+            }
+
+            binding.addedRemindersLayout.addView(reminderView)
         }
     }
 }
