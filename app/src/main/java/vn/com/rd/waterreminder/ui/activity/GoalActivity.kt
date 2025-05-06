@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.shawnlin.numberpicker.NumberPicker
 import vn.com.rd.waterreminder.Params
@@ -20,6 +22,7 @@ import vn.com.rd.waterreminder.databinding.ActivityGoalBinding
 import vn.com.rd.waterreminder.ui.factory.GoalViewModelFactory
 import vn.com.rd.waterreminder.ui.component.InfoItem
 import vn.com.rd.waterreminder.ui.component.InfoItemAdapter
+import vn.com.rd.waterreminder.ui.component.ReminderItemAdapter
 import vn.com.rd.waterreminder.ui.main.MainActivity
 import vn.com.rd.waterreminder.ui.viewmodel.GoalViewModel
 import java.util.Locale
@@ -27,16 +30,20 @@ import java.util.Locale
 
 class GoalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGoalBinding
-    private var itemType = 0
-    private var adapter: InfoItemAdapter? = null
-    private lateinit var list : MutableList<InfoItem>
+    private lateinit var list : MutableList<Reminder>
     private val TAG = "GoalActivity"
     private lateinit var viewModel: GoalViewModel
+    private var adapter: ReminderItemAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityGoalBinding.inflate(layoutInflater)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val bottomInset = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, bottomInset)
+            insets
+        }
         setContentView(binding.root)
 
         val backArrowDrawable = ContextCompat.getDrawable(this, R.drawable.ic_back)
@@ -97,19 +104,19 @@ class GoalActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         list = ArrayList()
-        adapter = InfoItemAdapter().apply {
+        adapter = ReminderItemAdapter().apply {
             setData(list)
         }
-        binding.rvHistory.adapter = adapter
+        binding.rvReminder.adapter = adapter
     }
 
     private fun loadSampleData() {
         // Sample data for the last 7 days
-        viewModel.historyItems.observe(this) {listDayHistory ->
-            if(listDayHistory != null){
-                for (dayHistory in listDayHistory){
-                    Log.i(TAG, "dayHistory: $dayHistory")
-                    list.add(InfoItem(dayHistory.date, dayHistory.amount.toString() + "/" + dayHistory.target.toString()))
+        viewModel.reminders.observe(this) {listReminder ->
+            if(listReminder != null){
+                for (reminder in listReminder){
+                    Log.i(TAG, "reminder: $reminder")
+                    list.add(reminder)
                 }
             }
             Log.i(TAG, "loadSampleData: " + list)
@@ -136,28 +143,9 @@ class GoalActivity : AppCompatActivity() {
         }
 
         viewModel.reminders.observe(this) { reminders ->
-            updateRemindersUI(reminders)
+            Log.i(TAG, "observeViewModel: $reminders")
+            adapter?.setData(reminders)
         }
     }
 
-    private fun updateRemindersUI(reminders: List<Reminder>) {
-        binding.addedRemindersLayout.removeAllViews()
-        Log.i(TAG, "reminders: $reminders")
-        reminders.forEach { reminder ->
-            val reminderView = layoutInflater.inflate(
-                R.layout.item_reminder_simple,
-                binding.addedRemindersLayout,
-                false
-            ).apply {
-                findViewById<TextView>(R.id.tv_reminder_time).text = reminder.time
-//                findViewById<TextView>(R.id.messageText).text = reminder.message
-
-//                findViewById<ImageButton>(R.id.deleteBtn).setOnClickListener {
-//                    viewModel.deleteReminder(reminder)
-//                }
-            }
-
-            binding.addedRemindersLayout.addView(reminderView)
-        }
-    }
 }
