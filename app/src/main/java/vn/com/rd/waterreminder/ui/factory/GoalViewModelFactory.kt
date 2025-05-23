@@ -3,6 +3,8 @@ package vn.com.rd.waterreminder.ui.factory
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import vn.com.rd.waterreminder.data.db.WaterDatabase
 import vn.com.rd.waterreminder.data.repository.ReminderRepository
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
@@ -23,7 +25,7 @@ class GoalViewModelFactory(
             val waterIntakeRepository = WaterIntakeRepository(waterIntakeDao)
 
             val reminderDao = database.reminderDao()
-            val reminderRepository = ReminderRepository(reminderDao)
+            val reminderRepository = ReminderRepository(reminderDao, context, CoroutineScope(SupervisorJob()))
 
             return GoalViewModel(repository, waterIntakeRepository, reminderRepository, userId) as T
         }

@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -21,7 +22,11 @@ class WaterAlarmService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        startForeground(notificationId, buildNotification("Service đang chạy"))
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            startForeground(notificationId, buildNotification("Service đang chạy"))
+        } else {
+            startForeground(notificationId, buildNotification("Service đang chạy"), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -60,16 +65,14 @@ class WaterAlarmService : Service() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Nhắc uống nước",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Thông báo nhắc uống nước"
-            }
-            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            channelId,
+            "Nhắc uống nước",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Thông báo nhắc uống nước"
         }
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(channel)
     }
 }

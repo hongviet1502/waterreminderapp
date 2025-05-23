@@ -4,28 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import vn.com.rd.waterreminder.Params
 import vn.com.rd.waterreminder.data.model.Reminder
 import vn.com.rd.waterreminder.data.repository.ReminderRepository
 
 class ReminderViewModel(
-    private val reminderRepository: ReminderRepository,
+    private val repository: ReminderRepository,
     private val userId: Long
 ) : ViewModel() {
 
-    val reminders: LiveData<List<Reminder>> = reminderRepository.getRemindersByUser(userId)
+    val reminders: LiveData<List<Reminder>> = repository.getAllReminders(userId)
 
-    fun upsertReminder(reminder: Reminder) = viewModelScope.launch {
-        reminderRepository.upsertReminder(reminder)
-    }
-
-    // Hàm delete reminder
-    fun deleteReminder(reminder: Reminder) = viewModelScope.launch {
-        reminderRepository.deleteReminder(reminder)
-    }
-
-    // Tạo reminder mới với user ID hiện tại
-    fun createNewReminder(
+    fun createReminder(
         message: String,
         time: String,
         repeatType: String,
@@ -35,26 +24,41 @@ class ReminderViewModel(
         thursday: Boolean = false,
         friday: Boolean = false,
         saturday: Boolean = false,
-        sunday: Boolean = false,
-        isEnabled: Boolean = true
-    ) = viewModelScope.launch {
-        val reminder = Reminder(
-            userId = userId,
-            message = message,
-            time = time,
-            repeatType = repeatType,
-            monday = monday,
-            tuesday = tuesday,
-            wednesday = wednesday,
-            thursday = thursday,
-            friday = friday,
-            saturday = saturday,
-            sunday = sunday,
-            isEnabled = isEnabled,
-            createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
-        )
+        sunday: Boolean = false
+    ) {
+        viewModelScope.launch {
+            val reminder = Reminder(
+                userId = userId,
+                message = message,
+                time = time,
+                repeatType = repeatType,
+                monday = monday,
+                tuesday = tuesday,
+                wednesday = wednesday,
+                thursday = thursday,
+                friday = friday,
+                saturday = saturday,
+                sunday = sunday
+            )
+            repository.insertReminder(reminder)
+        }
+    }
 
-        reminderRepository.upsertReminder(reminder)
+    fun updateReminder(reminder: Reminder) {
+        viewModelScope.launch {
+            repository.updateReminder(reminder)
+        }
+    }
+
+    fun deleteReminder(reminder: Reminder) {
+        viewModelScope.launch {
+            repository.deleteReminder(reminder)
+        }
+    }
+
+    fun toggleReminderEnabled(reminder: Reminder, isEnabled: Boolean) {
+        viewModelScope.launch {
+            repository.toggleReminderEnabled(reminder, isEnabled)
+        }
     }
 }

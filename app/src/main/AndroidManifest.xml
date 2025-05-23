@@ -4,7 +4,13 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!-- Quyền này chỉ cần thiết cho Android 12+ -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".WaterReminderApplication"
@@ -36,12 +42,19 @@
             android:name=".ui.main.MainActivity"
             android:exported="false" />
 
-        <service
-            android:name=".service.WaterAlarmService"
-            android:enabled="true"
+        <receiver
+            android:name=".service.ReminderReceiver"
             android:exported="false" />
 
-        <receiver android:name=".service.ReminderReceiver" />
+        <!-- Receiver để khởi động lại thông báo sau khi khởi động lại thiết bị -->
+        <receiver
+            android:name=".service.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
