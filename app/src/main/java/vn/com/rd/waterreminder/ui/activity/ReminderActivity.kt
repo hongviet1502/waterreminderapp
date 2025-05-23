@@ -105,7 +105,7 @@ class ReminderActivity : AppCompatActivity() {
             )
 
             // Lưu reminder vào database (sử dụng viewModel hoặc repository)
-            viewModel.upsertReminder(reminder)
+            viewModel.createReminder(reminder)
 
             // Hiển thị thông báo thành công
             Toast.makeText(this, "Reminder saved successfully", Toast.LENGTH_SHORT).show()

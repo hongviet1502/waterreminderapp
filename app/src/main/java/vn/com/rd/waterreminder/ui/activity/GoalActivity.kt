@@ -3,9 +3,11 @@ package vn.com.rd.waterreminder.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,21 +16,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shawnlin.numberpicker.NumberPicker
 import vn.com.rd.waterreminder.Params
 import vn.com.rd.waterreminder.R
 import vn.com.rd.waterreminder.data.model.Reminder
 import vn.com.rd.waterreminder.databinding.ActivityGoalBinding
 import vn.com.rd.waterreminder.ui.factory.GoalViewModelFactory
-import vn.com.rd.waterreminder.ui.component.InfoItem
-import vn.com.rd.waterreminder.ui.component.InfoItemAdapter
 import vn.com.rd.waterreminder.ui.component.ReminderItemAdapter
-import vn.com.rd.waterreminder.ui.main.MainActivity
 import vn.com.rd.waterreminder.ui.viewmodel.GoalViewModel
 import java.util.Locale
 
 
-class GoalActivity : AppCompatActivity() {
+class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionListener {
     private lateinit var binding: ActivityGoalBinding
     private lateinit var list : MutableList<Reminder>
     private val TAG = "GoalActivity"
@@ -57,6 +57,7 @@ class GoalActivity : AppCompatActivity() {
 
         // 3. Theo dõi dữ liệu từ ViewModel
         observeViewModel()
+
         setupSpinner()
         setupRecyclerView()
         setUpNumberPicker()
@@ -64,8 +65,6 @@ class GoalActivity : AppCompatActivity() {
         binding.llAddNew.setOnClickListener {
             startActivity(Intent(this, ReminderActivity::class.java))
         }
-        // Add sample data
-//        loadSampleData()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -104,24 +103,10 @@ class GoalActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         list = ArrayList()
-        adapter = ReminderItemAdapter().apply {
-            setData(list)
+        adapter = ReminderItemAdapter(this).apply {
+            adapter?.submitList(list)
         }
         binding.rvReminder.adapter = adapter
-    }
-
-    private fun loadSampleData() {
-        // Sample data for the last 7 days
-        viewModel.reminders.observe(this) {listReminder ->
-            if(listReminder != null){
-                for (reminder in listReminder){
-                    Log.i(TAG, "reminder: $reminder")
-                    list.add(reminder)
-                }
-            }
-            Log.i(TAG, "loadSampleData: " + list)
-            adapter?.notifyDataSetChanged()
-        }
     }
 
     private fun setUpNumberPicker(){
@@ -143,9 +128,43 @@ class GoalActivity : AppCompatActivity() {
         }
 
         viewModel.reminders.observe(this) { reminders ->
-            Log.i(TAG, "observeViewModel: $reminders")
-            adapter?.setData(reminders)
+            adapter?.submitList(reminders)
         }
+    }
+
+    override fun onReminderClick(reminder: Reminder) {
+        Log.i(TAG, "onReminderClick: $reminder")
+    }
+
+    override fun onReminderToggle(
+        reminder: Reminder,
+        isEnabled: Boolean
+    ) {
+        viewModel.toggleReminderEnabled(reminder, isEnabled)
+    }
+
+    override fun onReminderDelete(reminder: Reminder) {
+        showBottomSheetDeleteDialog(reminder)
+    }
+
+    private fun showBottomSheetDeleteDialog(reminder: Reminder) {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_delete, null)
+
+        view.findViewById<TextView>(R.id.tv_reminder_name).text = reminder.message
+
+        view.findViewById<LinearLayout>(R.id.layout_delete).setOnClickListener {
+            viewModel.deleteReminder(reminder)
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Reminder deleted successfully", Toast.LENGTH_SHORT).show()
+        }
+
+        view.findViewById<LinearLayout>(R.id.layout_cancel).setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
     }
 
 }

@@ -44,6 +44,12 @@ class ReminderViewModel(
         }
     }
 
+    fun createReminder(reminder: Reminder) {
+        viewModelScope.launch {
+            repository.insertReminder(reminder)
+        }
+    }
+
     fun updateReminder(reminder: Reminder) {
         viewModelScope.launch {
             repository.updateReminder(reminder)

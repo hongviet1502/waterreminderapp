@@ -69,23 +69,23 @@ class GoalViewModel(
         _currentGoal.value = repository.getOrCreateDefaultGoal(userId) // Refresh data
     }
 
-    val reminders: LiveData<List<Reminder>> = reminderRepository.getRemindersByUser(Params.USER_ID)
-//
-//    fun addReminder(time: String, message: String) {
-//        viewModelScope.launch {
-//            reminderRepository.addReminder(
-//                Reminder(
-//                    userId = Params.USER_ID,
-//                    time = time,
-//                    message = message
-//                )
-//            )
-//        }
-//    }
-//
-//    fun deleteReminder(reminder: Reminder) {
-//        viewModelScope.launch {
-//            reminderRepository.deleteReminder(reminder)
-//        }
-//    }
+    val reminders: LiveData<List<Reminder>> = reminderRepository.getAllReminders(Params.USER_ID)
+
+    fun updateReminder(reminder: Reminder) {
+        viewModelScope.launch {
+            reminderRepository.updateReminder(reminder)
+        }
+    }
+
+    fun deleteReminder(reminder: Reminder) {
+        viewModelScope.launch {
+            reminderRepository.deleteReminder(reminder)
+        }
+    }
+
+    fun toggleReminderEnabled(reminder: Reminder, isEnabled: Boolean) {
+        viewModelScope.launch {
+            reminderRepository.toggleReminderEnabled(reminder, isEnabled)
+        }
+    }
 }
