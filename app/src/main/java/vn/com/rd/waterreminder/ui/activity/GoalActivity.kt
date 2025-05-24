@@ -24,17 +24,17 @@ import vn.com.rd.waterreminder.data.model.Reminder
 import vn.com.rd.waterreminder.databinding.ActivityGoalBinding
 import vn.com.rd.waterreminder.ui.factory.GoalViewModelFactory
 import vn.com.rd.waterreminder.ui.component.ReminderItemAdapter
+import vn.com.rd.waterreminder.ui.fragment.AlarmFragment
 import vn.com.rd.waterreminder.ui.viewmodel.GoalViewModel
 import java.util.Locale
 
 
-class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionListener {
+class GoalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGoalBinding
-    private lateinit var list: MutableList<Reminder>
+    private lateinit var alarmFragment: AlarmFragment
+
     private val TAG = "GoalActivity"
     private lateinit var viewModel: GoalViewModel
-    private var adapter: ReminderItemAdapter? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,21 +55,25 @@ class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionLi
         val factory = GoalViewModelFactory(this, Params.USER_ID)
         viewModel = ViewModelProvider(this, factory)[GoalViewModel::class.java]
 
-        // 3. Theo dõi dữ liệu từ ViewModel
         observeViewModel()
-
         setupSpinner()
-        setupRecyclerView()
         setUpNumberPicker()
+        setupFragment()
 
-        binding.llAddNew.setOnClickListener {
-            ReminderActivity.startForCreate(this)
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
+    }
+
+    private fun setupFragment() {
+        // Tạo và thêm Fragment vào Activity
+        alarmFragment = AlarmFragment.newInstance()
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, alarmFragment)
+            .commit()
     }
 
     private fun setupSpinner() {
@@ -102,14 +106,6 @@ class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionLi
         }
     }
 
-    private fun setupRecyclerView() {
-        list = ArrayList()
-        adapter = ReminderItemAdapter(this).apply {
-            adapter?.submitList(list)
-        }
-        binding.rvReminder.adapter = adapter
-    }
-
     private fun setUpNumberPicker() {
         binding.numberPicker.setOnScrollListener { picker, scrollState ->
             if (scrollState == NumberPicker.OnScrollListener.SCROLL_STATE_IDLE) {
@@ -128,45 +124,5 @@ class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionLi
             } else {
             }
         }
-
-        viewModel.reminders.observe(this) { reminders ->
-            adapter?.submitList(reminders)
-        }
     }
-
-    override fun onReminderClick(reminder: Reminder) {
-        ReminderActivity.startForEdit(this, reminder)
-    }
-
-    override fun onReminderToggle(
-        reminder: Reminder,
-        isEnabled: Boolean
-    ) {
-        viewModel.toggleReminderEnabled(reminder, isEnabled)
-    }
-
-    override fun onReminderDelete(reminder: Reminder) {
-        showBottomSheetDeleteDialog(reminder)
-    }
-
-    private fun showBottomSheetDeleteDialog(reminder: Reminder) {
-        val bottomSheetDialog = BottomSheetDialog(this)
-        val view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_delete, null)
-
-        view.findViewById<TextView>(R.id.tv_reminder_name).text = reminder.message
-
-        view.findViewById<LinearLayout>(R.id.layout_delete).setOnClickListener {
-            viewModel.deleteReminder(reminder)
-            bottomSheetDialog.dismiss()
-            Toast.makeText(this, "Reminder deleted successfully", Toast.LENGTH_SHORT).show()
-        }
-
-        view.findViewById<LinearLayout>(R.id.layout_cancel).setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
-        bottomSheetDialog.setContentView(view)
-        bottomSheetDialog.show()
-    }
-
 }

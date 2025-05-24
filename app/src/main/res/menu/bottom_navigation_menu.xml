@@ -11,7 +11,7 @@
         android:id="@+id/menu_analysis"/>
 
     <item
-        android:title="Alarm"
+        android:title="Plan"
         android:icon="@drawable/alarm"
         android:id="@+id/menu_alarm"/>
 

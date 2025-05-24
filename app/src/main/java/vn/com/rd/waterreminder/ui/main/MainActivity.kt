@@ -3,14 +3,18 @@ package vn.com.rd.waterreminder.ui.main
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import vn.com.rd.waterreminder.databinding.ActivityMainBinding
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import vn.com.rd.waterreminder.R
 import vn.com.rd.waterreminder.WaterReminderApplication
 import vn.com.rd.waterreminder.ui.factory.MainViewModelFactory
 import vn.com.rd.waterreminder.service.WaterAlarmService
+import vn.com.rd.waterreminder.ui.fragment.AlarmFragment
 import vn.com.rd.waterreminder.ui.fragment.AnalysisFragment
 import vn.com.rd.waterreminder.ui.fragment.HomeFragment
 import vn.com.rd.waterreminder.ui.fragment.ProfileFragment
@@ -25,7 +29,13 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
+//        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+//            val bottomInset = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+//            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, bottomInset)
+//            insets
+//        }
         setContentView(binding.root)
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
@@ -36,6 +46,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.menu_analysis -> {
                     loadFragment(AnalysisFragment())
+                    true
+                }
+                R.id.menu_alarm -> {
+                    loadFragment(AlarmFragment())
                     true
                 }
                 R.id.menu_setting -> {
@@ -58,11 +72,7 @@ class MainActivity : AppCompatActivity() {
 
         // Khởi động Service
         val serviceIntent = Intent(this, WaterAlarmService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent)
-        } else {
-            startService(serviceIntent)
-        }
+        startForegroundService(serviceIntent)
 
     }
     private fun loadFragment(fragment: Fragment) {
