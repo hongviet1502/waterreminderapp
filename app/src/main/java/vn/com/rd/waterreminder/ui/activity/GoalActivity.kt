@@ -30,7 +30,7 @@ import java.util.Locale
 
 class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionListener {
     private lateinit var binding: ActivityGoalBinding
-    private lateinit var list : MutableList<Reminder>
+    private lateinit var list: MutableList<Reminder>
     private val TAG = "GoalActivity"
     private lateinit var viewModel: GoalViewModel
     private var adapter: ReminderItemAdapter? = null
@@ -63,7 +63,7 @@ class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionLi
         setUpNumberPicker()
 
         binding.llAddNew.setOnClickListener {
-            startActivity(Intent(this, ReminderActivity::class.java))
+            ReminderActivity.startForCreate(this)
         }
     }
 
@@ -92,7 +92,8 @@ class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionLi
                 val selectedUnit = parent?.getItemAtPosition(position) as String
                 // Xử lý khi chọn đơn vị
                 viewModel.updateWaterUnit(position) // Gọi ViewModel nếu cần
-                Toast.makeText(this@GoalActivity, "Selected: $selectedUnit", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@GoalActivity, "Selected: $selectedUnit", Toast.LENGTH_SHORT)
+                    .show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -109,7 +110,7 @@ class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionLi
         binding.rvReminder.adapter = adapter
     }
 
-    private fun setUpNumberPicker(){
+    private fun setUpNumberPicker() {
         binding.numberPicker.setOnScrollListener { picker, scrollState ->
             if (scrollState == NumberPicker.OnScrollListener.SCROLL_STATE_IDLE) {
                 Log.d(TAG, String.format(Locale.US, "newVal: %d", picker.value))
@@ -118,13 +119,14 @@ class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionLi
         }
     }
 
-    private fun observeViewModel(){
+    private fun observeViewModel() {
         viewModel.currentGoal.observe(this) { goal ->
             if (goal != null) {
                 // Update UI khi có goal
                 binding.numberPicker.value = goal.unitAmount
                 binding.spnUnit.setSelection(goal.unit)
-            } else { }
+            } else {
+            }
         }
 
         viewModel.reminders.observe(this) { reminders ->
@@ -133,7 +135,7 @@ class GoalActivity : AppCompatActivity(), ReminderItemAdapter.OnReminderActionLi
     }
 
     override fun onReminderClick(reminder: Reminder) {
-        Log.i(TAG, "onReminderClick: $reminder")
+        ReminderActivity.startForEdit(this, reminder)
     }
 
     override fun onReminderToggle(
