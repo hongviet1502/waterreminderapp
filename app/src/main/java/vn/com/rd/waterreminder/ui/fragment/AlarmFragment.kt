@@ -1,6 +1,7 @@
 package vn.com.rd.waterreminder.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -60,7 +61,7 @@ class AlarmFragment : Fragment(), ReminderItemAdapter.OnReminderActionListener {
     }
 
     private fun observeViewModel() {
-        viewModel.reminders.observe(this) { reminders ->
+        viewModel.reminders.observe(viewLifecycleOwner) { reminders ->
             adapter?.submitList(reminders)
         }
     }

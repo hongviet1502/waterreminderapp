@@ -20,7 +20,6 @@ import vn.com.rd.waterreminder.ui.factory.HomeViewModelFactory
 import vn.com.rd.waterreminder.ui.activity.GoalActivity
 import vn.com.rd.waterreminder.util.TimeUtil
 import vn.com.rd.waterreminder.ui.viewmodel.HomeViewModel
-import vn.com.rd.waterreminder.ui.viewmodel.WaterIntakeViewModel
 
 class HomeFragment : Fragment() {
     private lateinit var _binding: FragmentHomeBinding
