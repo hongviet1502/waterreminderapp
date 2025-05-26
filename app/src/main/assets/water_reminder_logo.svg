@@ -1,0 +1,154 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Circle with Gradient -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#29B6F6;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- Water Drop Gradient -->
+        <linearGradient id="dropGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#81D4FA;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#4FC3F7;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0288D1;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- Glass Gradient -->
+        <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:0.9" />
+            <stop offset="50%" style="stop-color:#BBDEFB;stop-opacity:0.7" />
+            <stop offset="100%" style="stop-color:#90CAF9;stop-opacity:0.8" />
+        </linearGradient>
+
+        <!-- Bell Gradient -->
+        <linearGradient id="bellGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFD54F;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFC107;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- Shadow Filter -->
+        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.2"/>
+        </filter>
+
+        <!-- Shine Effect -->
+        <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
+            <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background Circle -->
+    <circle cx="100" cy="100" r="95" fill="url(#bgGradient)" filter="url(#shadow)"/>
+
+    <!-- Glass/Cup -->
+    <g transform="translate(100, 100)">
+        <!-- Glass Body -->
+        <path d="M -25 -15 L -20 35 Q -20 40 -15 40 L 15 40 Q 20 40 20 35 L 25 -15 Z"
+            fill="url(#glassGradient)"
+            stroke="#0277BD"
+            stroke-width="2"/>
+
+        <!-- Water in Glass -->
+        <path d="M -23 0 L -18 30 Q -18 35 -13 35 L 13 35 Q 18 35 18 30 L 23 0
+             Q 20 -5 15 -5 Q 5 -2 0 -5 Q -5 -2 -15 -5 Q -20 -5 -23 0 Z"
+            fill="url(#dropGradient)"
+            opacity="0.8"/>
+
+        <!-- Water Surface Animation -->
+        <ellipse cx="0" cy="-2" rx="22" ry="3" fill="#B3E5FC" opacity="0.6">
+            <animate attributeName="ry" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.4;0.6" dur="2s" repeatCount="indefinite"/>
+        </ellipse>
+
+        <!-- Glass Rim -->
+        <ellipse cx="0" cy="-15" rx="25" ry="3"
+            fill="none"
+            stroke="#0277BD"
+            stroke-width="2"/>
+
+        <!-- Glass Shine Effect -->
+        <ellipse cx="-8" cy="-5" rx="3" ry="8" fill="url(#shine)" opacity="0.7"/>
+    </g>
+
+    <!-- Water Drops -->
+    <g>
+        <!-- Large Drop -->
+        <path d="M 60 70 Q 50 50 60 40 Q 70 50 60 70 Q 60 75 60 70 Z"
+            fill="url(#dropGradient)"
+            filter="url(#shadow)">
+            <animateTransform attributeName="transform"
+                type="translate"
+                values="0,0; 0,-5; 0,0"
+                dur="3s"
+                repeatCount="indefinite"/>
+        </path>
+
+        <!-- Medium Drop -->
+        <path d="M 145 65 Q 138 50 145 42 Q 152 50 145 65 Q 145 68 145 65 Z"
+            fill="url(#dropGradient)"
+            filter="url(#shadow)">
+            <animateTransform attributeName="transform"
+                type="translate"
+                values="0,0; 0,-3; 0,0"
+                dur="2.5s"
+                repeatCount="indefinite"/>
+        </path>
+
+        <!-- Small Drop -->
+        <circle cx="75" cy="45" r="4"
+            fill="url(#dropGradient)"
+            filter="url(#shadow)">
+            <animate attributeName="r" values="4;5;4" dur="2s" repeatCount="indefinite"/>
+        </circle>
+    </g>
+
+    <!-- Notification Bell -->
+    <g transform="translate(140, 60)">
+        <!-- Bell Body -->
+        <path d="M 0 -8 Q -8 -8 -8 0 Q -8 8 0 8 Q 8 8 8 0 Q 8 -8 0 -8 Z"
+            fill="url(#bellGradient)"
+            filter="url(#shadow)"/>
+
+        <!-- Bell Top -->
+        <rect x="-2" y="-12" width="4" height="4" fill="url(#bellGradient)" rx="2"/>
+
+        <!-- Bell Bottom -->
+        <ellipse cx="0" cy="8" rx="8" ry="2" fill="url(#bellGradient)"/>
+
+        <!-- Bell Clapper -->
+        <circle cx="0" cy="6" r="2" fill="#FFF59D"/>
+
+        <!-- Notification Lines -->
+        <g stroke="#FFD54F" stroke-width="2" fill="none" opacity="0.8">
+            <path d="M -12 -2 L -16 -2">
+                <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.5s" repeatCount="indefinite"/>
+            </path>
+            <path d="M 12 -2 L 16 -2">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.5s" repeatCount="indefinite"/>
+            </path>
+            <path d="M -10 -8 L -13 -11">
+                <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.8s" repeatCount="indefinite"/>
+            </path>
+            <path d="M 10 -8 L 13 -11">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.8s" repeatCount="indefinite"/>
+            </path>
+        </g>
+    </g>
+
+    <!-- Sparkle Effects -->
+    <g fill="#FFFFFF" opacity="0.7">
+        <circle cx="40" cy="120" r="2">
+            <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="160" cy="130" r="1.5">
+            <animate attributeName="opacity" values="0.2;0.7;0.2" dur="2.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="50" cy="160" r="1">
+            <animate attributeName="opacity" values="0.7;0.2;0.7" dur="3s" repeatCount="indefinite"/>
+        </circle>
+    </g>
+
+    <!-- Main Shine Overlay -->
+    <circle cx="100" cy="100" r="95" fill="url(#shine)" opacity="0.3"/>
+</svg>
