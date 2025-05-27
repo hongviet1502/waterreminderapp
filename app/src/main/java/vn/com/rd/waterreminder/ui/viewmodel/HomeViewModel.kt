@@ -5,8 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Callback
+import vn.com.rd.waterreminder.data.api.RetrofitInstance
 import vn.com.rd.waterreminder.data.model.WaterGoal
 import vn.com.rd.waterreminder.data.model.WaterIntake
+import vn.com.rd.waterreminder.data.model.WeatherResponse
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
 import vn.com.rd.waterreminder.data.repository.WaterIntakeRepository
 import java.time.LocalDate
@@ -100,5 +105,24 @@ class HomeViewModel(
     }
     private suspend fun refreshData(){
         _currentGoal.value = repository.getOrCreateDefaultGoal(userId) // Refresh data
+    }
+
+    private val _weatherData = MutableLiveData<WeatherResponse>()
+    val weatherData: LiveData<WeatherResponse> = _weatherData
+
+    private val apiKey = "c144a2735006bbb2bacf8f7c69a4635e"
+
+    fun fetchWeather(city: String) {
+        RetrofitInstance.api.getWeatherByCity(city, apiKey).enqueue(object : Callback<WeatherResponse> {
+            override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
+                if (response.isSuccessful) {
+                    _weatherData.value = response.body()
+                }
+            }
+
+            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                // xử lý lỗi nếu cần
+            }
+        })
     }
 }

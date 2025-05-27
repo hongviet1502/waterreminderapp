@@ -1,8 +1,6 @@
 package vn.com.rd.waterreminder.ui.fragment
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +13,14 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import vn.com.rd.waterreminder.Params
-import vn.com.rd.waterreminder.data.model.Reminder
 import vn.com.rd.waterreminder.data.model.WaterDayHistoryItem
 import vn.com.rd.waterreminder.data.model.toInfoItems
 import vn.com.rd.waterreminder.databinding.FragmentAnalysisBinding
 import vn.com.rd.waterreminder.ui.component.InfoItem
 import vn.com.rd.waterreminder.ui.component.InfoItemAdapter
-import vn.com.rd.waterreminder.ui.component.ReminderItemAdapter
 import vn.com.rd.waterreminder.ui.factory.AnalysisViewModelFactory
 import vn.com.rd.waterreminder.ui.viewmodel.AnalysisViewModel
+import androidx.core.graphics.toColorInt
 
 class AnalysisFragment : Fragment() {
     private lateinit var _binding: FragmentAnalysisBinding
@@ -73,10 +70,10 @@ class AnalysisFragment : Fragment() {
         }
 
         val drinkSet = BarDataSet(entries, "Drink (ml)")
-        drinkSet.color = Color.parseColor("#42A5F5")
+        drinkSet.color = "#42A5F5".toColorInt()
 
         val targetSet = BarDataSet(targetEntries, "Target (ml)")
-        targetSet.color = Color.parseColor("#90CAF9")
+        targetSet.color = "#90CAF9".toColorInt()
 
         val barData = BarData(drinkSet, targetSet)
         barData.barWidth = 0.4f

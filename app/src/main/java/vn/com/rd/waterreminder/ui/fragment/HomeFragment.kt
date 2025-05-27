@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import vn.com.rd.waterreminder.Params
+import vn.com.rd.waterreminder.R
 import vn.com.rd.waterreminder.data.db.WaterDatabase
 import vn.com.rd.waterreminder.data.model.WaterIntake
 import vn.com.rd.waterreminder.data.repository.WaterGoalRepository
@@ -20,6 +22,7 @@ import vn.com.rd.waterreminder.ui.factory.HomeViewModelFactory
 import vn.com.rd.waterreminder.ui.activity.GoalActivity
 import vn.com.rd.waterreminder.util.TimeUtil
 import vn.com.rd.waterreminder.ui.viewmodel.HomeViewModel
+import java.util.Calendar
 
 class HomeFragment : Fragment() {
     private lateinit var _binding: FragmentHomeBinding
@@ -43,12 +46,10 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         homeViewModel.loadGoalData()
-        startUpdatingTime()
     }
 
     override fun onPause() {
         super.onPause()
-        stopUpdatingTime()
     }
 
     override fun onCreateView(
@@ -63,38 +64,25 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    private fun startUpdatingTime() {
-        timeRunnable = object : Runnable {
-            override fun run() {
-                val currentTime = TimeUtil.getCurrentTime()
-                binding.tvTime.text = currentTime
-                handler.postDelayed(this, 10000)
-            }
-        }
-        handler.post(timeRunnable)
-    }
-
-    private fun stopUpdatingTime() {
-        handler.removeCallbacks(timeRunnable)
-    }
-
     private fun setupListeners() {
-        binding.waterProgressView.setProgress(0.8f)
-        binding.waterProgressView.setOnClickListener {
-            binding.waterProgressView.animateDrinking(
-                drinkDuration = 1500,
-                refillDuration = 2000,
-                delayBetween = 600,
-                onAnimationEnd = {
-                    homeViewModel.addWaterIntake(WaterIntake(userId = Params.USER_ID, amount = unitVol, containerType = containerType, timestamp = System.currentTimeMillis()))
-                }
-            )
-        }
+//        binding.waterProgressView.setProgress(0.8f)
+//        binding.waterProgressView.setOnClickListener {
+//            binding.waterProgressView.animateDrinking(
+//                drinkDuration = 1500,
+//                refillDuration = 2000,
+//                delayBetween = 600,
+//                onAnimationEnd = {
+//                    homeViewModel.addWaterIntake(WaterIntake(userId = Params.USER_ID, amount = unitVol, containerType = containerType, timestamp = System.currentTimeMillis()))
+//                }
+//            )
+//        }
+    }
 
-        binding.btnSetYourGoal.setOnClickListener {
-            val intent = Intent(requireActivity(), GoalActivity::class.java)
-            startActivity(intent)
-        }
+    private fun setupUI() {
+        // Set greeting based on time
+        val greeting = getGreeting()
+        binding.tvGreeting.text = greeting
+        setupWeatherInfo()
     }
 
     private fun observeViewModel(){
@@ -117,19 +105,79 @@ class HomeFragment : Fragment() {
                 unitVol = unitVolume
                 val targetGoal = unitVolume * (goal.unitAmount)
                 targetAmount = targetGoal
-                binding.tvTarget.text = targetGoal.toString() + "ml"
-                binding.waterProgressView.setValue("${unitVolume}ml")
-                binding.tvGoal.text = "${targetGoal}ml water (${goal.unitAmount} ${unit})"
+                binding.tvTargetWater.text = "of " + targetGoal.toString() + "ml target"
             } else { }
         }
 
         homeViewModel.getTodayIntake().observe(requireActivity()) { intake ->
-            binding.tvTodayTotal.text = intake.toString() + "ml"
+            binding.tvCurrentWater.text = intake.toString() + "ml"
             val percent = (intake?.toDouble()?.div(targetAmount))?.times(100)
-            binding.tvPercentToday.text = percent.toString()+"%"
+            updateMotivationalMessage(percent?.toInt() ?: 0)
+            binding.tvProgressPercentage.text = "$percent%"
             if (percent != null) {
-                binding.prbTarget.progress = percent.toInt()
+                binding.progressBar.progress = percent.toInt()
             }
         }
+
+        homeViewModel.weatherData.observe(viewLifecycleOwner, Observer { weather ->
+            Log.i(TAG, "weatherData: $weather")
+            binding.tvTemperature.text = "${weather.main.temp}°C"
+            binding.tvHumidity.text = "${weather.main.humidity}%"
+            binding.tvLocation.text = weather.name
+
+            val weatherIconCode = weather.weather[0].icon
+            when (weatherIconCode) {
+                "01d" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_01d)
+                "01n" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_01n)
+                "02d" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_02d)
+                "02n" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_02n)
+                "03d" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_03d)
+                "03n" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_03n)
+                "04d" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_04d)
+                "04n" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_04n)
+                "09d" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_09d)
+                "09n" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_09n)
+                "10d" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_10d)
+                "10n" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_10n)
+                "11d" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_11d)
+                "11n" -> binding.ivWeatherIcon.setImageResource(R.drawable.ic_11n)
+                else -> {
+                    // Xử lý trường hợp mặc định nếu cần
+                    binding.ivWeatherIcon.setImageResource(R.drawable.ic_02d)
+                }
+            }
+        })
+
+        // Gọi API thời tiết
+        homeViewModel.fetchWeather("Hanoi")
+    }
+
+    private fun getGreeting(): String {
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        return when {
+            hour < 12 -> "Good Morning"
+            hour < 18 -> "Good Afternoon"
+            else -> "Good Evening"
+        }
+    }
+
+    private fun setupWeatherInfo() {
+        binding.tvTemperature.text = "28°C"
+        binding.tvLocation.text = "Ho Chi Minh City"
+        binding.tvHumidity.text = "65%"
+        binding.tvWeatherRecommendation.text = "Hot weather! Drink more water 🔥"
+        // Set weather icon based on condition
+        binding.ivWeatherIcon.setImageResource(R.drawable.ic_01d)
+    }
+
+    private fun updateMotivationalMessage(percentage: Int) {
+        val message = when {
+            percentage >= 100 -> "🎉 Amazing! You've reached your daily goal!"
+            percentage >= 75 -> "🌟 Almost there! You're doing great!"
+            percentage >= 50 -> "💪 Great job! You're halfway to your goal!"
+            percentage >= 25 -> "🚀 Good start! Keep it up!"
+            else -> "💧 Time to start hydrating!"
+        }
+        binding.tvMotivationalMessage.text = message
     }
 }
