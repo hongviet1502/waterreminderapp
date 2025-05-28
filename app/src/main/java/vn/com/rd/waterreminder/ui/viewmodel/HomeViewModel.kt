@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Callback
+import vn.com.rd.waterreminder.Params
 import vn.com.rd.waterreminder.data.api.RetrofitInstance
 import vn.com.rd.waterreminder.data.model.WaterGoal
 import vn.com.rd.waterreminder.data.model.WaterIntake
@@ -83,6 +84,17 @@ class HomeViewModel(
     fun addWaterIntake(waterIntake: WaterIntake) {
         viewModelScope.launch {
             waterIntakeRepository.addWaterIntake(waterIntake)
+        }
+    }
+
+    fun addWaterIntake(amount: Int) {
+        viewModelScope.launch {
+            waterIntakeRepository.addWaterIntake(WaterIntake(
+                userId = userId,
+                amount = amount,
+                containerType = Params.BOTTLE,
+                timestamp = System.currentTimeMillis()),
+            )
         }
     }
 

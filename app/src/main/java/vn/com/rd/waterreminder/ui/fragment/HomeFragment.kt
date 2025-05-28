@@ -60,22 +60,16 @@ class HomeFragment : Fragment() {
         val homeViewModelFactory = HomeViewModelFactory(requireActivity(), Params.USER_ID)
         homeViewModel = ViewModelProvider(this, homeViewModelFactory)[HomeViewModel::class.java]
         setupListeners()
+        setupUI()
         observeViewModel()
         return binding.root
     }
 
     private fun setupListeners() {
-//        binding.waterProgressView.setProgress(0.8f)
-//        binding.waterProgressView.setOnClickListener {
-//            binding.waterProgressView.animateDrinking(
-//                drinkDuration = 1500,
-//                refillDuration = 2000,
-//                delayBetween = 600,
-//                onAnimationEnd = {
-//                    homeViewModel.addWaterIntake(WaterIntake(userId = Params.USER_ID, amount = unitVol, containerType = containerType, timestamp = System.currentTimeMillis()))
-//                }
-//            )
-//        }
+        binding.btn100ml.setOnClickListener { homeViewModel.addWaterIntake(100) }
+        binding.btn250ml.setOnClickListener { homeViewModel.addWaterIntake(250) }
+        binding.btn500ml.setOnClickListener { homeViewModel.addWaterIntake(500) }
+        binding.btn750ml.setOnClickListener { homeViewModel.addWaterIntake(750) }
     }
 
     private fun setupUI() {
@@ -88,21 +82,12 @@ class HomeFragment : Fragment() {
     private fun observeViewModel(){
         homeViewModel.currentGoal.observe(viewLifecycleOwner) { goal ->
             if (goal != null) {
-                // Update UI khi có goal
-                val unit = when (goal.unit) {
-                    Params.GLASS -> "glass(es)"
-                    Params.BOTTLE -> "bottle(s)"
-                    Params.MUG -> "mug(s)"
-                    else -> "unknown"
-                }
-                containerType = goal.unit
                 val unitVolume = when (goal.unit) {
                     Params.GLASS -> Params.GLASS_VOL
                     Params.BOTTLE -> Params.BOTTLE_VOL
                     Params.MUG -> Params.MUG_VOL
                     else -> 0
                 }
-                unitVol = unitVolume
                 val targetGoal = unitVolume * (goal.unitAmount)
                 targetAmount = targetGoal
                 binding.tvTargetWater.text = "of " + targetGoal.toString() + "ml target"
